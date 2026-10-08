@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('personals', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre');
+            $table->string('apellido');
+            $table->string('telefono');
+            $table->string('email')->unique();
+            $table->string('direccion');
+            $table->text('especialidad');
+            $table->binary('disponibilidad')->default(0);
+            $table->time('horario_inicio');
+            $table->time('horario_fin');
             $table->timestamps();
         });
     }

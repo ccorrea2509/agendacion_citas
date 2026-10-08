@@ -5,7 +5,7 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\PersonalController;
 
-Route::Resource('personal', PersonalController::class)->middleware('auth');
+Route::Resource('Personal', PersonalController::class)->middleware('auth');
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
