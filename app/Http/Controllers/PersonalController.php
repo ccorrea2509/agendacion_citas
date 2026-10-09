@@ -14,8 +14,10 @@ class PersonalController extends Controller
      */
     public function index()
     {
+
         $personals = Personal::all();
         return Inertia::render('dashboard/personal/index', compact('personals'));
+
     }
 
     /**
@@ -23,7 +25,9 @@ class PersonalController extends Controller
      */
     public function create()
     {
+
         return Inertia::render('dashboard/personal/create');
+
     }
 
     /**

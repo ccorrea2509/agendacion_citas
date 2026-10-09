@@ -76,7 +76,7 @@ interface Personal {
 </script>
 
 <template>
-    <Head title="Perosnal" />
+    <Head title="Personal" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
@@ -128,3 +128,4 @@ interface Personal {
         </div>
     </AppLayout>
 </template>
+
