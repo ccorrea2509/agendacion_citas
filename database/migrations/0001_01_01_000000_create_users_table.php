@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('id_tecnico')->default(0)->nullable();
             $table->string('email')->unique();
             $table->string('rol')->default('Administrador')->nullable();
-            $table->integer('id_tecnico')->default(0)->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
