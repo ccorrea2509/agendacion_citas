@@ -21,7 +21,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Servicios',
-        href: '/dashboard',
+        href: '/servicios',
         icon: Wrench,
     },
     {
