@@ -68,21 +68,15 @@ const columns = [
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             
-            <!-- Rejilla superior estética idéntica a Personal -->
+            <!-- Rejilla superior estética idéntica a Personal (Completamente vacía y limpia) -->
             <div class="grid auto-rows-min gap-4 md:grid-cols-3">
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"></div>
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"></div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <div class="flex h-full items-center justify-center p-4">
-                        <Link href="/servicios/create" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition">
-                            + Registrar Servicio
-                        </Link>
-                    </div>
-                </div>
+                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"></div>
             </div>
 
             <!-- Tabla de datos nativa con acciones -->
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
+            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min p-4">
                 <DataTable
                     :data="props.servicios"
                     :columns="columns"
@@ -108,6 +102,13 @@ const columns = [
                         </div>
                     </template>
                 </DataTable>
+
+                <!-- El botón ahora está aquí abajo de forma limpia y segura -->
+                <div class="flex justify-end mt-4 pt-4 border-t border-sidebar-border/40">
+                    <Link href="/servicios/create" class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition shadow-md">
+                        + Registrar Servicio
+                    </Link>
+                </div>
             </div>
         </div>
     </AppLayout>
