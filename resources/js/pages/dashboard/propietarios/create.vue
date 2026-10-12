@@ -5,7 +5,16 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+interface UserOption {
+    id: number;
+    name: string;
+    email: string;
+}
+
+const props = defineProps<{ users: UserOption[] }>();
+
 const form = useForm({
+    user_id: '',
     tipo_documento: '',
     documento: '',
     nombre: '',
@@ -13,6 +22,10 @@ const form = useForm({
     telefono: '',
     email: '',
     direccion: '',
+    placa: '',
+    linea: '',
+    marca: '',
+    modelo: '',
 });
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -35,9 +48,39 @@ function submit() {
                     <h2 class="mb-6 text-2xl font-semibold text-gray-800">Registrar propietario</h2>
 
                     <div class="grid gap-4 md:grid-cols-2">
+                        <div class="grid gap-2 md:col-span-2">
+                            <Label for="user_id">Cuenta de usuario</Label>
+                            <select
+                                id="user_id"
+                                v-model="form.user_id"
+                                required
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            >
+                                <option value="" disabled>Selecciona una cuenta de cliente</option>
+                                <option v-for="user in props.users" :key="user.id" :value="String(user.id)">
+                                    {{ user.name }} — {{ user.email }}
+                                </option>
+                            </select>
+                            <p v-if="form.errors.user_id" class="text-sm text-red-600">{{ form.errors.user_id }}</p>
+                            <p v-if="props.users.length === 0" class="text-sm text-muted-foreground">
+                                No hay cuentas de cliente disponibles para asociar.
+                            </p>
+                        </div>
                         <div class="grid gap-2">
                             <Label for="tipo_documento">Tipo de documento</Label>
-                            <Input id="tipo_documento" v-model="form.tipo_documento" placeholder="CC, NIT, pasaporte..." required />
+                            <select
+                                id="tipo_documento"
+                                v-model="form.tipo_documento"
+                                required
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            >
+                                <option value="" disabled>Selecciona el tipo de documento</option>
+                                <option value="CC">Cédula de ciudadanía (CC)</option>
+                                <option value="CE">Cédula de extranjería (CE)</option>
+                                <option value="TI">Tarjeta de identidad (TI)</option>
+                                <option value="NIT">NIT</option>
+                                <option value="Pasaporte">Pasaporte</option>
+                            </select>
                             <p v-if="form.errors.tipo_documento" class="text-sm text-red-600">{{ form.errors.tipo_documento }}</p>
                         </div>
                         <div class="grid gap-2">
@@ -69,6 +112,28 @@ function submit() {
                             <Label for="direccion">Dirección</Label>
                             <Input id="direccion" v-model="form.direccion" placeholder="Dirección" required />
                             <p v-if="form.errors.direccion" class="text-sm text-red-600">{{ form.errors.direccion }}</p>
+                        </div>
+
+                        <h3 class="mt-4 text-lg font-semibold md:col-span-2">Datos del vehículo</h3>
+                        <div class="grid gap-2">
+                            <Label for="placa">Placa</Label>
+                            <Input id="placa" v-model="form.placa" placeholder="Placa" required />
+                            <p v-if="form.errors.placa" class="text-sm text-red-600">{{ form.errors.placa }}</p>
+                        </div>
+                        <div class="grid gap-2">
+                            <Label for="linea">Línea</Label>
+                            <Input id="linea" v-model="form.linea" placeholder="Línea" required />
+                            <p v-if="form.errors.linea" class="text-sm text-red-600">{{ form.errors.linea }}</p>
+                        </div>
+                        <div class="grid gap-2">
+                            <Label for="marca">Marca</Label>
+                            <Input id="marca" v-model="form.marca" placeholder="Marca" required />
+                            <p v-if="form.errors.marca" class="text-sm text-red-600">{{ form.errors.marca }}</p>
+                        </div>
+                        <div class="grid gap-2">
+                            <Label for="modelo">Modelo</Label>
+                            <Input id="modelo" v-model="form.modelo" placeholder="Modelo" required />
+                            <p v-if="form.errors.modelo" class="text-sm text-red-600">{{ form.errors.modelo }}</p>
                         </div>
                     </div>
 

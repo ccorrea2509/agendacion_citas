@@ -3,9 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\PersonalController;
 
 Route::Resource('Personal', PersonalController::class)->middleware('auth');
+Route::resource('propietarios', PropietarioController::class)
+    ->except('show')
+    ->middleware(['auth', 'role:Administrador']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome');

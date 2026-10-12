@@ -41,7 +41,20 @@ const submit = () => {
 
                 <div class="grid gap-2">
                     <Label for="tipo_documento">Tipo de documento</Label>
-                    <Input id="tipo_documento" v-model="form.tipo_documento" required autofocus autocomplete="off" placeholder="CC, NIT, pasaporte..." />
+                    <select
+                        id="tipo_documento"
+                        v-model="form.tipo_documento"
+                        required
+                        autofocus
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        <option value="" disabled>Selecciona el tipo de documento</option>
+                        <option value="CC">Cédula de ciudadanía (CC)</option>
+                        <option value="CE">Cédula de extranjería (CE)</option>
+                        <option value="TI">Tarjeta de identidad (TI)</option>
+                        <option value="NIT">NIT</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                    </select>
                     <InputError :message="form.errors.tipo_documento" />
                 </div>
 
