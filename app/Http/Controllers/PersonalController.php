@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Personal;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 use Inertia\Inertia;
 
@@ -42,12 +44,11 @@ class PersonalController extends Controller
             'telefono' => 'required|string|max:20',
             'email' => 'required|email|unique:personals,email',
             'direccion' => 'required|string|max:255',
-            'especialidad' => 'required|string',
             'horario_inicio' => 'required|date_format:H:i',
             'horario_fin' => 'required|date_format:H:i|after:horario_inicio',
         ]); 
         
-        $personal = Personal::create([
+        /*$personal = Personal::create([
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
             'telefono' => $request->telefono,
@@ -56,8 +57,9 @@ class PersonalController extends Controller
             'especialidad' => $request->especialidad,
             'horario_inicio' => $request->horario_inicio,
             'horario_fin' => $request->horario_fin
-        ]);
-        /*$personal = new Personal();
+        ]);*/
+        $personal = new Personal();
+
         $personal->nombre = $request->nombre;
         $personal->apellido = $request->apellido;
         $personal->telefono = $request->telefono;
@@ -66,7 +68,20 @@ class PersonalController extends Controller
         $personal->especialidad = $request->especialidad;
         $personal->horario_inicio = $request->horario_inicio;
         $personal->horario_fin = $request->horario_fin;
-        $personal->save();*/
+
+        $personal->save();
+
+        $user = new User();
+
+        $user->name = $request->nombre . ' ' . $request->apellido;
+        $user->rol = "Tecnico";
+        $user->password=Hash::make($request->telefono);
+        $user->id_usuario = $personal->id;
+        $user->email = $request->email;
+
+        $user->save();
+
+
 
         return redirect()->route('Personal.index');
     }
@@ -97,6 +112,16 @@ class PersonalController extends Controller
      */
     public function update(Request $request, $personal)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'email' => 'required|email',
+            'direccion' => 'required|string|max:255',
+            'horario_inicio' => 'required|date_format:H:i',
+            'horario_fin' => 'required|date_format:H:i|after:horario_inicio',
+        ]); 
+
         $personal = Personal::find($personal);
         $personal->nombre = $request->nombre;
         $personal->apellido = $request->apellido;
@@ -107,6 +132,16 @@ class PersonalController extends Controller
         $personal->horario_inicio = $request->horario_inicio;
         $personal->horario_fin = $request->horario_fin;
         $personal->save();
+
+        $user = User::where('id_usuario', $personal->id)->where('rol', 'Tecnico')->first();
+
+        $user->name = $request->nombre . ' ' . $request->apellido;
+        $user->rol = "Tecnico";
+        $user->password=Hash::make($request->telefono);
+        $user->id_usuario = $personal->id;
+        $user->email = $request->email;
+
+        $user->save();
 
         return redirect()->route('Personal.index');
     }

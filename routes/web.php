@@ -4,8 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\PersonalController;
+use App\Http\Controllers\PuestoTrabajoController;
 
 Route::Resource('Personal', PersonalController::class)->middleware('auth');
+Route::Resource('PuestoTrabajo', PuestoTrabajoController::class)->middleware('auth');
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
