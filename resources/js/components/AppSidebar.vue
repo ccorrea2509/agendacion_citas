@@ -41,7 +41,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Propietarios',
-        href: '/dashboard',
+        href: '/propietarios',
         icon: UserRound,
     },
     {

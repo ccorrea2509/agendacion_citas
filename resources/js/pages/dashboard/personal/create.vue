@@ -53,6 +53,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <h2 class="mb-6 text-2xl font-semibold text-gray-800 p-3">
                             Registrar Personal
                         </h2>
+                        <p class="px-3 text-sm text-muted-foreground">Se creará el acceso del técnico automáticamente. Su contraseña inicial será su teléfono.</p>
                         <div class="grid gap-2 p-1">
                             <Label for="nombre">Nombre:</Label>
                             <Input type="text" v-model="form.nombre" placeholder="Nombre" id="nombre" name="nombre" required />

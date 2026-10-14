@@ -5,16 +5,7 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-interface UserOption {
-    id: number;
-    name: string;
-    email: string;
-}
-
-const props = defineProps<{ users: UserOption[] }>();
-
 const form = useForm({
-    user_id: '',
     tipo_documento: '',
     documento: '',
     nombre: '',
@@ -46,26 +37,9 @@ function submit() {
             <div class="relative flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                 <form class="p-6 md:p-8" @submit.prevent="submit">
                     <h2 class="mb-6 text-2xl font-semibold text-gray-800">Registrar propietario</h2>
+                    <p class="mb-4 text-sm text-muted-foreground">Se creará el acceso del cliente automáticamente. Su contraseña inicial será su número de documento.</p>
 
                     <div class="grid gap-4 md:grid-cols-2">
-                        <div class="grid gap-2 md:col-span-2">
-                            <Label for="user_id">Cuenta de usuario</Label>
-                            <select
-                                id="user_id"
-                                v-model="form.user_id"
-                                required
-                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                            >
-                                <option value="" disabled>Selecciona una cuenta de cliente</option>
-                                <option v-for="user in props.users" :key="user.id" :value="String(user.id)">
-                                    {{ user.name }} — {{ user.email }}
-                                </option>
-                            </select>
-                            <p v-if="form.errors.user_id" class="text-sm text-red-600">{{ form.errors.user_id }}</p>
-                            <p v-if="props.users.length === 0" class="text-sm text-muted-foreground">
-                                No hay cuentas de cliente disponibles para asociar.
-                            </p>
-                        </div>
                         <div class="grid gap-2">
                             <Label for="tipo_documento">Tipo de documento</Label>
                             <select

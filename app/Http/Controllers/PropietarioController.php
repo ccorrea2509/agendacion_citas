@@ -8,6 +8,7 @@ use App\Models\Vehiculo;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,26 +24,12 @@ class PropietarioController extends Controller
 
     public function create(): Response
     {
-        $users = User::query()
-            ->where('rol', 'Cliente')
-            ->whereDoesntHave('propietario')
-            ->orderBy('name')
-            ->get(['id', 'name', 'email']);
-
-        return Inertia::render('dashboard/propietarios/create', [
-            'users' => $users,
-        ]);
+        return Inertia::render('dashboard/propietarios/create');
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => [
-                'required',
-                'integer',
-                Rule::exists('users', 'id')->where('rol', 'Cliente'),
-                Rule::unique('propietarios', 'user_id'),
-            ],
             'tipo_documento' => ['required', 'string', 'max:255'],
             'documento' => ['required', 'string', 'max:255', 'unique:propietarios,documento'],
             'nombre' => ['required', 'string', 'max:255'],
@@ -55,7 +42,7 @@ class PropietarioController extends Controller
                 'email',
                 'max:255',
                 'unique:propietarios,email',
-                Rule::unique('users', 'email')->ignore($request->input('user_id')),
+                'unique:users,email',
             ],
             'direccion' => ['required', 'string', 'max:255'],
             'placa' => ['required', 'string', 'max:255', 'unique:vehiculos,placa'],
@@ -65,7 +52,12 @@ class PropietarioController extends Controller
         ]);
 
         DB::transaction(function () use ($validated) {
-            $user = User::findOrFail($validated['user_id']);
+            $user = new User();
+            $user->name = trim($validated['nombre'].' '.$validated['apellido']);
+            $user->email = $validated['email'];
+            $user->password = Hash::make($validated['documento']);
+            $user->rol = 'Cliente';
+            $user->save();
 
             $propietario = new Propietario();
             $propietario->user_id = $user->id;
@@ -86,9 +78,6 @@ class PropietarioController extends Controller
             $vehiculo->id_propietario = $propietario->id;
             $vehiculo->save();
 
-            $user->name = trim($validated['nombre'].' '.$validated['apellido']);
-            $user->email = $validated['email'];
-            $user->save();
         });
 
         return to_route('propietarios.index');
