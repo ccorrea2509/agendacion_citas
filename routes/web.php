@@ -7,8 +7,8 @@ use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\ServicioController;
 
 
-Route::Resource('Personal', PersonalController::class)->middleware('auth');
-Route::resource('servicios', ServicioController::class)->middleware('auth');
+Route::resource('Personal', PersonalController::class)->middleware('auth');
+Route::resource('Servicios', ServicioController::class)->middleware('auth');
 
 
 Route::get('/', function () {
@@ -18,7 +18,6 @@ Route::get('/', function () {
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
 
 
 require __DIR__.'/settings.php';

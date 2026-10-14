@@ -35,7 +35,7 @@ watch(plantillaSeleccionada, (nuevoNombre) => {
 });
 
 function submit() {
-    form.post('/servicios', {
+    form.post('/Servicios', {
         onSuccess: () => {
             form.reset();
             plantillaSeleccionada.value = '';
@@ -44,8 +44,8 @@ function submit() {
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-    { title: 'Servicios', href: '/servicios' },
-    { title: 'Registrar', href: '/servicios/create' },
+    { title: 'Servicios', href: '/Servicios' },
+    { title: 'Registrar', href: '/Servicios/create' },
 ];
 </script>
 
@@ -54,7 +54,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
                 
                 <form @submit.prevent="submit">   
@@ -65,7 +64,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                         <div class="grid gap-2 p-1 mb-4">
                             <Label for="plantilla">Cargar Plantilla de Trabajo (Opcional):</Label>
-                            <select id="plantilla" v-model="plantillaSeleccionada" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-white bg-[#111]">
+                            <select id="plantilla" v-model="plantillaSeleccionada" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors text-white bg-[#111] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
                                 <option value="" class="bg-black">-- Selecciona un trabajo estándar --</option>
                                 <option v-for="item in serviciosPredefinidos" :key="item.nombre" :value="item.nombre" class="bg-black">
                                     {{ item.nombre }}
@@ -94,7 +93,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         </div>
 
                         <div class="grid gap-2 p-6">
-                            <button type="submit" :disabled="form.processing" class="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            <button type="submit" :disabled="form.processing" class="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 Guardar
                             </button>
                         </div>

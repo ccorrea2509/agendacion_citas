@@ -20,7 +20,7 @@ const props = defineProps<{
 }>();
 
 function editar(servicio: Servicio) {
-    router.get(`/servicios/${servicio.id}/edit`);
+    router.get(`/Servicios/${servicio.id}/edit`);
 }
 
 const showDeleteModal = ref(false);
@@ -34,7 +34,7 @@ function eliminar(servicio: Servicio) {
 function confirmarEliminacion() {
     if (!servicioToDelete.value) return;
 
-    router.delete(`/servicios/${servicioToDelete.value.id}`, {
+    router.delete(`/Servicios/${servicioToDelete.value.id}`, {
         onSuccess: () => {
             showDeleteModal.value = false;
             servicioToDelete.value = null;
@@ -50,7 +50,7 @@ function cancelarEliminacion() {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Servicios',
-        href: '/servicios',
+        href: '/Servicios',
     },
 ];
 
@@ -70,7 +70,7 @@ const columns = [
             
             <!-- Botón azul posicionado arriba a lo largo de la pantalla -->
             <div class="w-full">
-                <Link href="/servicios/create" class="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 transition shadow-md">
+                <Link href="/Servicios/create" class="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 transition shadow-md">
                     + Registrar Servicio
                 </Link>
             </div>
