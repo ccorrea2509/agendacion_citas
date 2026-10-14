@@ -68,11 +68,11 @@ const columns = [
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             
-            <!-- Rejilla superior estética idéntica a Personal (Completamente vacía y limpia) -->
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"></div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"></div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"></div>
+            <!-- Botón azul posicionado arriba a lo largo de la pantalla -->
+            <div class="w-full">
+                <Link href="/servicios/create" class="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 transition shadow-md">
+                    + Registrar Servicio
+                </Link>
             </div>
 
             <!-- Tabla de datos nativa con acciones -->
@@ -102,13 +102,6 @@ const columns = [
                         </div>
                     </template>
                 </DataTable>
-
-                <!-- El botón ahora está aquí abajo de forma limpia y segura -->
-                <div class="flex justify-end mt-4 pt-4 border-t border-sidebar-border/40">
-                    <Link href="/servicios/create" class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition shadow-md">
-                        + Registrar Servicio
-                    </Link>
-                </div>
             </div>
         </div>
     </AppLayout>

@@ -11,8 +11,11 @@ class ServicioController extends Controller
     // Catálogo de Servicios
     public function index()
     {
-        $servicios = DB::table('servicios')->get();
-        return Inertia::render('dashboard/servicios/Index', [
+        // La tabla en XAMPP se sigue llamando 'servicios' en minúscula
+        $servicios = DB::table('servicios')->get(); 
+        
+        // Aquí SÍ usas la S mayúscula porque apunta a tu carpeta física en el disco duro
+        return Inertia::render('dashboard/Servicios/Index', [
             'servicios' => $servicios
         ]);
     }
@@ -20,7 +23,8 @@ class ServicioController extends Controller
     // Mostrar Formulario de Registro
     public function create()
     {
-        return Inertia::render('dashboard/servicios/Create');
+        // Apuntamos a la carpeta física con la S mayúscula
+        return Inertia::render('dashboard/Servicios/Create');
     }
 
     // Guardar en la Base de Datos
@@ -42,14 +46,16 @@ class ServicioController extends Controller
             'updated_at' => now(),
         ]);
 
+        // CORRECCIÓN: La ruta interna de Laravel de regreso DEBE ser en minúscula obligatoriamente
         return redirect()->route('servicios.index')->with('success', 'Servicio creado correctamente.');
     }
 
     // Mostrar Formulario de Edición
     public function edit($id)
     {
+        // Tabla en minúscula ('servicios') e Inertia apuntando a tu carpeta en mayúscula ('Servicios/Edit')
         $servicio = DB::table('servicios')->where('id', $id)->first();
-        return Inertia::render('dashboard/servicios/Edit', [
+        return Inertia::render('dashboard/Servicios/Edit', [
             'servicio' => $servicio
         ]);
     }
@@ -72,6 +78,7 @@ class ServicioController extends Controller
             'updated_at' => now(),
         ]);
 
+        // CORRECCIÓN: Ruta de redirección interna en minúscula
         return redirect()->route('servicios.index')->with('success', 'Servicio actualizado.');
     }
 
@@ -79,6 +86,8 @@ class ServicioController extends Controller
     public function destroy($id)
     {
         DB::table('servicios')->where('id', $id)->delete();
+        
+        // CORRECCIÓN: Ruta de redirección interna en minúscula
         return redirect()->route('servicios.index')->with('success', 'Servicio eliminado.');
     }
 }
