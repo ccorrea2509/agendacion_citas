@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Personal;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 use Inertia\Inertia;
 
@@ -46,23 +44,22 @@ class PersonalController extends Controller
             'telefono' => 'required|string|max:20',
             'email' => ['required', 'email', 'unique:personals,email', 'unique:users,email'],
             'direccion' => 'required|string|max:255',
-            'especialidad' => 'required|string',
             'horario_inicio' => 'required|date_format:H:i',
             'horario_fin' => 'required|date_format:H:i|after:horario_inicio',
         ]); 
         
-        DB::transaction(function () use ($validated) {
-            $personal = Personal::create($validated);
+        /*$personal = Personal::create([
+            'nombre' => $request->nombre,
+            'apellido' => $request->apellido,
+            'telefono' => $request->telefono,
+            'email' => $request->email,
+            'direccion' => $request->direccion,
+            'especialidad' => $request->especialidad,
+            'horario_inicio' => $request->horario_inicio,
+            'horario_fin' => $request->horario_fin
+        ]);*/
+        $personal = new Personal();
 
-            $user = new User();
-            $user->name = trim($validated['nombre'].' '.$validated['apellido']);
-            $user->email = $validated['email'];
-            $user->password = Hash::make($validated['telefono']);
-            $user->rol = 'Tecnico';
-            $user->id_tecnico = $personal->id;
-            $user->save();
-        });
-        /*$personal = new Personal();
         $personal->nombre = $request->nombre;
         $personal->apellido = $request->apellido;
         $personal->telefono = $request->telefono;
@@ -71,7 +68,20 @@ class PersonalController extends Controller
         $personal->especialidad = $request->especialidad;
         $personal->horario_inicio = $request->horario_inicio;
         $personal->horario_fin = $request->horario_fin;
-        $personal->save();*/
+
+        $personal->save();
+
+        $user = new User();
+
+        $user->name = $request->nombre . ' ' . $request->apellido;
+        $user->rol = "Tecnico";
+        $user->password=Hash::make($request->telefono);
+        $user->id_usuario = $personal->id;
+        $user->email = $request->email;
+
+        $user->save();
+
+
 
         return redirect()->route('Personal.index');
     }
@@ -102,46 +112,36 @@ class PersonalController extends Controller
      */
     public function update(Request $request, $personal)
     {
-        $personal = Personal::findOrFail($personal);
-        $user = User::query()->where('id_tecnico', $personal->id)->first();
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'telefono' => 'required|string|max:20',
+            'email' => 'required|email',
+            'direccion' => 'required|string|max:255',
+            'horario_inicio' => 'required|date_format:H:i',
+            'horario_fin' => 'required|date_format:H:i|after:horario_inicio',
+        ]); 
 
-        $validated = $request->validate([
-            'nombre' => ['required', 'string', 'max:255'],
-            'apellido' => ['required', 'string', 'max:255'],
-            'telefono' => ['required', 'string', 'max:20'],
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('personals', 'email')->ignore($personal->id),
-                Rule::unique('users', 'email')->ignore($user?->id),
-            ],
-            'direccion' => ['required', 'string', 'max:255'],
-            'especialidad' => ['required', 'string'],
-            'horario_inicio' => ['required', 'date_format:H:i'],
-            'horario_fin' => ['required', 'date_format:H:i', 'after:horario_inicio'],
-        ]);
+        $personal = Personal::find($personal);
+        $personal->nombre = $request->nombre;
+        $personal->apellido = $request->apellido;
+        $personal->telefono = $request->telefono;
+        $personal->email = $request->email;
+        $personal->direccion = $request->direccion;
+        $personal->especialidad = $request->especialidad;
+        $personal->horario_inicio = $request->horario_inicio;
+        $personal->horario_fin = $request->horario_fin;
+        $personal->save();
 
-        DB::transaction(function () use ($personal, $user, $validated) {
-            $personal->nombre = $validated['nombre'];
-            $personal->apellido = $validated['apellido'];
-            $personal->telefono = $validated['telefono'];
-            $personal->email = $validated['email'];
-            $personal->direccion = $validated['direccion'];
-            $personal->especialidad = $validated['especialidad'];
-            $personal->horario_inicio = $validated['horario_inicio'];
-            $personal->horario_fin = $validated['horario_fin'];
-            $personal->save();
+        $user = User::where('id_usuario', $personal->id)->where('rol', 'Tecnico')->first();
 
-            $user ??= new User();
-            $user->name = trim($validated['nombre'].' '.$validated['apellido']);
-            $user->email = $validated['email'];
-            $user->rol = 'Tecnico';
-            $user->id_tecnico = $personal->id;
-            if (! $user->exists) {
-                $user->password = Hash::make($validated['telefono']);
-            }
-            $user->save();
-        });
+        $user->name = $request->nombre . ' ' . $request->apellido;
+        $user->rol = "Tecnico";
+        $user->password=Hash::make($request->telefono);
+        $user->id_usuario = $personal->id;
+        $user->email = $request->email;
+
+        $user->save();
 
         return redirect()->route('Personal.index');
     }

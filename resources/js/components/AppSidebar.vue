@@ -31,7 +31,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Puestos Trabajo',
-        href: '/dashboard',
+        href: '/PuestoTrabajo',
         icon: BetweenHorizontalStart,
     },
     {
