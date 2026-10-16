@@ -3,13 +3,20 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\ServicioController;
 
 
-Route::resource('Personal', PersonalController::class)->middleware('auth');
 Route::resource('Servicios', ServicioController::class)->middleware('auth');
 
+use App\Http\Controllers\PuestoTrabajoController;
+
+Route::Resource('Personal', PersonalController::class)->middleware('auth');
+Route::resource('propietarios', PropietarioController::class)
+    ->except('show')
+    ->middleware(['auth', 'role:Administrador']);
+Route::Resource('PuestoTrabajo', PuestoTrabajoController::class)->middleware('auth');
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
