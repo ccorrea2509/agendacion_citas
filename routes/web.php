@@ -6,9 +6,13 @@ use Inertia\Inertia;
 use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\AsignacionCitaController;
 
 
 Route::resource('Servicios', ServicioController::class)->middleware('auth');
+Route::resource('AsignacionCita', AsignacionCitaController::class)->middleware('auth');
+Route::get('/disponibles', [AsignacionCitaController::class, 'disponibles'])
+    ->name('disponibles');
 
 use App\Http\Controllers\PuestoTrabajoController;
 

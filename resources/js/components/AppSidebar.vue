@@ -26,7 +26,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Citas',
-        href: '/dashboard',
+        href: '/AsignacionCita',
         icon: CalendarDays,
     },
     {

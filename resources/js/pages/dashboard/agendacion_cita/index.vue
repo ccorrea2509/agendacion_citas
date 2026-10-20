@@ -1,0 +1,79 @@
+<script setup lang="ts">
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
+import { Head } from '@inertiajs/vue3';
+import {DataTable} from "@/components/ui/datatable";
+import { router } from '@inertiajs/vue3';
+import {ConfirmModal} from "@/components/ui/confirmmodal";
+import { ref } from 'vue';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'AsignacionCita',
+        href: '/AsignacionCita',
+    },
+];
+
+const props = defineProps<{
+    citas: Cita[];
+}>();
+
+const columns = [
+    { key: 'nombre', label: 'Nombre' },
+    { key: 'cita_fecha', label: 'cita_fecha' },
+    { key: 'id_vehiculo', label: 'id_vehiculo' },
+    { key: 'id_user', label: 'id_user' },
+    { key: 'created_at', label: 'created_at' },
+];
+
+interface Cita {
+    id: number;
+    cita_fecha: string;
+    id_vehiculo: string;
+    id_user: string;
+    created_at: string;
+}
+
+</script>
+
+<template>
+    <Head title="Citas" />
+
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+            <a href="/AsignacionCita/create" class="rounded-lg bg-blue-600 px-3 py-2 text-sm text-center text-white hover:bg-blue-700">
+                Agregar Cita
+            </a>
+            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
+                <DataTable
+                    :data="props.citas"
+                    :columns="columns"
+                    :per-page="10"
+                >
+                    <template #actions="{ item }">
+                        <div class="flex gap-2">
+
+                            <button
+                                type="button"
+                                @click="editar(item)"
+                                class="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
+                            >
+                                Editar
+                            </button>
+
+                            <button 
+                                type="button"
+                                @click="eliminar(item)" 
+                                class="rounded-lg bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700" >
+                                Eliminar
+                             </button>
+
+                        </div>
+                    </template>
+                </DataTable>
+                
+            </div>
+        </div>
+    </AppLayout>
+</template>
+

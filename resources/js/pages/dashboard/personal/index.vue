@@ -42,7 +42,7 @@ function cancelarEliminacion() {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Personal',
-        href: '/personal',
+        href: '/Personal',
     },
 ];
 
