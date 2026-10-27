@@ -23,6 +23,7 @@ return new class extends Migration
                 ->on('users')
                 ->onDelete('cascade');
             $table->bigInteger('tiempo_aproximado')->default(0);
+            $table->string('estado')->default('creado');
             $table->timestamps();
         });
     }

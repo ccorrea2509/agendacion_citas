@@ -5,12 +5,12 @@ import { Head } from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3';
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
+import {SelectSearch} from "@/components/ui/selectsearch";
 import Disponibles from './disponibles.vue';
 import { ref,watch } from 'vue';
 import { computed } from 'vue';
 import { router } from '@inertiajs/vue3';
 import axios from 'axios';
-
 
 const hoy = new Date();
 const fechaActual = [
@@ -22,8 +22,10 @@ const fechaActual = [
 const form = useForm({
     fecha: fechaActual,
     hora: '',
-    puesto_trabajo: '',
+    tiempo: 0,
+    puesto_trabajo: null as number | null,
     servicios: [] as number[],
+    vehiculo: null as number | null,
 });
 
 ///////////////
@@ -65,7 +67,6 @@ async function consultarDisponibles() {
         fechaConsultada.value = response.data.fecha;
     } catch (e) {
         if (solicitud !== solicitudActual) return;
-
         error.value = 'No fue posible consultar los puestos disponibles.';
         puestosDisponibles.value = [];
     } finally {
@@ -93,6 +94,7 @@ const tiempoFormateado = computed(() => {
     return `${horas} h ${minutos} min`;
 });
 
+
 interface Servicio {
     id: number;
     nombre: string;
@@ -101,8 +103,14 @@ interface Servicio {
     duracion_minutos: number;
 }
 
+interface Vehiculos {
+    id: number;
+    placa: string;
+}
+
 const props = defineProps<{
     servicios: Servicio[];
+    vehiculos: Vehiculos[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -132,6 +140,11 @@ watch(
     { immediate: true }
 );
 
+
+watch(tiempoAcumulado, (nuevoTiempo) => {
+    form.tiempo = nuevoTiempo;
+});
+
 </script>
 
 <template>
@@ -150,11 +163,21 @@ watch(
                             Asignacion Cita
                         </h2>
                         <p class="px-3 text-sm text-muted-foreground">Se creará asigaraa una cita lo mas cercana posible.</p>
+                        <div class="">
+                            
+                            <Label for="Cliente">Cliente:</Label>
+                            
+                            <SelectSearch
+                                v-model="form.vehiculo"
+                                :options="props.vehiculos"
+                                option-value="id"
+                                option-label="placa"
+                                placeholder="Buscar vehículo por placa..."
+                            />
+                        </div>
                         <div class="grid gap-2 p-1">
                             <Label for="nombre">Fecha:</Label>
                             <Input type="date" :min="fechaActual" v-model="form.fecha" @change="consultarDisponibles" required />
-                        </div>
-                        <div class="grid gap-2 p-1">
                             <Label for="hora">Hora:</Label>
                             <div class="grid grid-cols-3 gap-2">
                                 <!-- Hora -->
@@ -272,6 +295,7 @@ watch(
                                     :citas="citas"
                                     :fecha="fechaConsultada"
                                     :puestos-disponibles="puestosDisponibles"
+                                    @seleccionar="form.puesto_trabajo = $event"
                                 />
                             </div>
                         </div>

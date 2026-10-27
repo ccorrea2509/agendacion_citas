@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
+
+
+const emit = defineEmits<{
+    seleccionar: [id: number];
+}>();
+
 interface PuestoTrabajo {
     id: number;
     numero_puesto: number;
@@ -14,6 +22,9 @@ defineProps<{
     puestosDisponibles: PuestoTrabajo[];
     citas: Citas[];
 }>();
+
+const puestoSeleccionado = ref<number | null>(null);
+
 </script>
 
 <template>
@@ -28,6 +39,17 @@ defineProps<{
             class="mb-2 rounded-lg border p-3"
         >
             Puesto {{ puesto.numero_puesto }}
+            <input
+                type="radio"
+                :value="puesto.id"
+                :checked="puestoSeleccionado === puesto.id"
+                @change="() => {
+                    puestoSeleccionado = puesto.id;
+                    emit('seleccionar', puesto.id);
+                }"
+                name="puesto_trabajo"
+                class="ml-2"
+            />
         </div>
 
         <p
@@ -48,6 +70,7 @@ defineProps<{
             class="mb-2 rounded-lg border p-3"
         >
             Citas {{ cita.cita_fecha }}- Creacion: {{ cita.created_at }}
+            
         </div>
 
         <p

@@ -6,6 +6,7 @@ import {DataTable} from "@/components/ui/datatable";
 import { router } from '@inertiajs/vue3';
 import {ConfirmModal} from "@/components/ui/confirmmodal";
 import { ref } from 'vue';
+import { computed } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,15 +15,28 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+const CitasAsignadas = computed(() =>
+    props.citas.map((puesto) => ({
+        ...puesto,
+        vehiculo: puesto.vehiculo
+            ? `${puesto.vehiculo.placa} (${puesto.vehiculo.marca})`
+            : 'Sin asignar',
+        usuario_creador: puesto.usuario_creador
+            ? `${puesto.usuario_creador.name} (${puesto.usuario_creador.rol})`
+            : 'Sin asignar',
+    }))
+);
+
 const props = defineProps<{
     citas: Cita[];
 }>();
 
 const columns = [
-    { key: 'nombre', label: 'Nombre' },
     { key: 'cita_fecha', label: 'cita_fecha' },
-    { key: 'id_vehiculo', label: 'id_vehiculo' },
-    { key: 'id_user', label: 'id_user' },
+    { key: 'vehiculo', label: 'Vehículo' },
+    { key: 'usuario_creador', label: 'Usuario Creador' },
+    { key: 'tiempo_aproximado', label: 'tiempo_aproximado' },
+    { key: 'estado', label: 'estado' },
     { key: 'created_at', label: 'created_at' },
 ];
 
@@ -30,7 +44,16 @@ interface Cita {
     id: number;
     cita_fecha: string;
     id_vehiculo: string;
-    id_user: string;
+    vehiculo: {
+        id: number;
+        placa: string;
+        marca: string;
+    } | null;
+    usuario_creador: {
+        id: number;
+        name: string;
+        rol: string;
+    } | null;
     created_at: string;
 }
 
@@ -46,7 +69,7 @@ interface Cita {
             </a>
             <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
                 <DataTable
-                    :data="props.citas"
+                    :data="CitasAsignadas"
                     :columns="columns"
                     :per-page="10"
                 >
@@ -61,12 +84,6 @@ interface Cita {
                                 Editar
                             </button>
 
-                            <button 
-                                type="button"
-                                @click="eliminar(item)" 
-                                class="rounded-lg bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700" >
-                                Eliminar
-                             </button>
 
                         </div>
                     </template>
