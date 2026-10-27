@@ -56,20 +56,21 @@ class AsignacionCitaController extends Controller
     public function store(Request $request)
     {
         //dd(auth()->user()->name);
-        //dd($request->all());
         $request->validate([
-            'fecha' => 'required|date',
-            'hora' => 'required|date_format:H:i',
-            'puesto_trabajo' => 'required|string|max:255',
-            'servicios' => 'required|array|min:1',
-            'servicios.*' => 'exists:servicios,id',
+            'fecha' => 'required',
+            'hora' => 'required',
+            'puesto_trabajo' => 'required',
+            'servicios' => 'required',
+            'vehiculo' => 'required',
         ]);
 
+        //dd($request->all());
         $cita = new AsignacionCita();
         $cita->cita_fecha = $request->fecha . ' ' . $request->hora;
-        $cita->id_vehiculo = 1; // Asignar un ID de vehículo válido según tu lógica
+        $cita->id_vehiculo = $request->vehiculo; // Asignar un ID de vehículo válido según tu lógica
         $cita->id_user = auth()->user()->id; // Asignar el ID del usuario autenticado
-        $cita->tiempo_aproximado = $request->tiempo; // Asignar un tiempo aproximado según tu lógica
+        $cita->tiempo_aproximado = $request->tiempo;
+        $cita->puesto_asignado=$request->puesto_trabajo; // Asignar un tiempo aproximado según tu lógica
         $cita->save();
         
         foreach ($request->servicios as $servicioId) {
@@ -77,7 +78,7 @@ class AsignacionCitaController extends Controller
             $procedimiento=new Procedimiento();
             $procedimiento->id_cita=$cita->id;
             $procedimiento->id_puesto_trabajo=$request->puesto_trabajo;
-            $procedimiento->id_personal=1; // Asignar un ID de personal válido según tu lógica
+            $procedimiento->id_personal=0; // Asignar un ID de personal válido según tu lógica
             $procedimiento->id_user=auth()->user()->id; // Asignar el ID del usuario autenticado
             $procedimiento->precio=0; // Asignar un precio según tu lógica
             $procedimiento->id_servicio=$servicioId;

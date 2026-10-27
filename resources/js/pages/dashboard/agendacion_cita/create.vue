@@ -148,7 +148,7 @@ watch(tiempoAcumulado, (nuevoTiempo) => {
 </script>
 
 <template>
-    <Head title="Personal" />
+    <Head title="Creacion Citas" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
