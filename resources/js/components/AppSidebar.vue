@@ -36,7 +36,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Vehiculos',
-        href: '/dashboard',
+        href: '/vehiculos',
         icon: CarFront,
     },
     {

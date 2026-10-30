@@ -39,6 +39,10 @@ function editar(propietario: Propietario) {
     router.get(`/propietarios/${propietario.id}/edit`);
 }
 
+function ver(propietario: Propietario) {
+    router.get(`/propietarios/${propietario.id}`);
+}
+
 function eliminar(propietario: Propietario) {
     propietarioToDelete.value = propietario;
     showDeleteModal.value = true;
@@ -80,6 +84,9 @@ function cancelarEliminacion() {
                 <DataTable :data="props.propietarios" :columns="columns" :per-page="10">
                     <template #actions="{ item }">
                         <div class="flex gap-2">
+                            <button type="button" class="rounded-lg bg-slate-600 px-3 py-2 text-sm text-white hover:bg-slate-700" @click="ver(item)">
+                                Ver
+                            </button>
                             <button type="button" class="rounded-lg bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700" @click="editar(item)">
                                 Editar
                             </button>

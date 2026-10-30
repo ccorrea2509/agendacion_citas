@@ -27,6 +27,15 @@ class PropietarioController extends Controller
         return Inertia::render('dashboard/propietarios/create');
     }
 
+    public function show(Propietario $propietario): Response
+    {
+        return Inertia::render('dashboard/propietarios/show', [
+            'propietario' => $propietario->load([
+                'vehiculos' => fn ($query) => $query->latest(),
+            ]),
+        ]);
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
