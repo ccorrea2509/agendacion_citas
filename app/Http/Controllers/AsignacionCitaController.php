@@ -80,7 +80,10 @@ class AsignacionCitaController extends Controller
             $procedimiento->id_puesto_trabajo=$request->puesto_trabajo;
             $procedimiento->id_personal=0; // Asignar un ID de personal válido según tu lógica
             $procedimiento->id_user=auth()->user()->id; // Asignar el ID del usuario autenticado
-            $procedimiento->precio=0; // Asignar un precio según tu lógica
+
+            $servicio=Servicio::find($servicioId);
+
+            $procedimiento->precio=$servicio->precio; // Asignar un precio según tu lógica
             $procedimiento->id_servicio=$servicioId;
             $procedimiento->save();
         }
