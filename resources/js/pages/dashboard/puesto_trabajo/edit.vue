@@ -1,88 +1,134 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import { useForm } from '@inertiajs/vue3';
-import {Input} from "@/components/ui/input";
-import {Label} from "@/components/ui/label";
-import {Select} from '@/components/ui/select';
-import { ref } from 'vue';
+import { Head, useForm } from '@inertiajs/vue3';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-const props = defineProps<{
-    personals: Personal[];
-    puestos_trabajo: PuestoTrabajo;
-}>();
-
-const form = useForm({
-    id: props.puestos_trabajo?.id || '',
-    id_servicios: props.puestos_trabajo?.id_servicios || '',
-    numero_puesto: props.puestos_trabajo?.numero_puesto || '',
-    id_tecnico: props.puestos_trabajo?.id_tecnico || null,
-
-});
-
-interface Personal { 
+interface Personal {
     id: number;
-    nombre: string; 
-    apellido: string;  }
+    nombre: string;
+    apellido: string;
+}
+
+interface Servicio {
+    id: number;
+    nombre: string;
+    precio: number;
+    duracion_minutos: number;
+}
 
 interface PuestoTrabajo {
     id: number;
-    numero_puesto: string | null;
-    id_servicios: string | null;
+    numero_puesto: string;
+    id_servicios: string;
     id_tecnico: number | null;
 }
 
-const personalSeleccionado = ref('');
+const props = defineProps<{
+    puestos_trabajo: PuestoTrabajo;
+    personals: Personal[];
+    servicios: Servicio[];
+}>();
+
+let initialServicios: string[] = [];
+let initialManual = '';
+
+try {
+    const parsed = JSON.parse(props.puestos_trabajo.id_servicios || '[]');
+    if (Array.isArray(parsed)) {
+        initialServicios = parsed.map(String);
+    } else {
+        initialManual = props.puestos_trabajo.id_servicios || '';
+    }
+} catch (e) {
+    initialManual = props.puestos_trabajo.id_servicios || '';
+}
+
+const form = useForm({
+    id: props.puestos_trabajo.id,
+    numero_puesto: props.puestos_trabajo.numero_puesto || '',
+    servicios: initialServicios,
+    servicio_manual: initialManual,
+    tecnico: props.puestos_trabajo.id_tecnico || '',
+});
+
+function submit() {
+    form.put(`/PuestoTrabajo/${form.id}`);
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'PuestoTrabajo',
-        href: '/PuestoTrabajo',
-    },
+    { title: 'Puestos de Trabajo', href: '/PuestoTrabajo' },
+    { title: 'Editar', href: `/PuestoTrabajo/${form.id}/edit` },
 ];
-
 </script>
 
 <template>
-
-    <Head title="Puesto Trabajo" />
+    <Head title="Editar Puesto de Trabajo" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
-                <!--<form @submit.prevent="submit">-->
+            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min p-6">
                 
-                        
-                        
-                <form @submit.prevent="form.put(`/PuestoTrabajo/${form.id}`)">   
-                    <div class="p-6 md:p-2">
-                        <h2 class="mb-6 text-2xl font-semibold text-gray-800 p-3">
-                            Registrar Puesto de Trabajo
-                        </h2>
-                        <div class="grid gap-2 p-1">
-                            <Label for="nombre">Numero Puesto:</Label>
-                            <Input type="text" v-model="form.numero_puesto" placeholder="Numero Puesto" id="numero_puesto" name="numero_puesto" required />
+                <form @submit.prevent="submit" class="max-w-2xl mx-auto space-y-6">
+                    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                        Editar Puesto de Trabajo
+                    </h2>
+
+                    <!-- Número de Puesto -->
+                    <div class="grid gap-2">
+                        <Label for="numero_puesto">Número / Identificador de Puesto:</Label>
+                        <Input type="text" v-model="form.numero_puesto" placeholder="Ej. Puesto 1" id="numero_puesto" required />
+                    </div>
+
+                    <!-- Checkboxes de Servicios -->
+                    <div class="grid gap-2">
+                        <Label>Seleccionar Servicios del Catálogo:</Label>
+                        <div v-if="servicios.length === 0" class="text-sm text-gray-400 italic">
+                            No hay servicios registrados en el sistema.
                         </div>
-                        <div class="grid gap-2 p-1">
-                            <Label for="apellido">Servicios:</Label>
-                            <Input type="text" v-model="form.id_servicios" placeholder="Servicios" id="id_servicios" name="id_servicios" required />
-                        </div>
-                        <div class="grid gap-2 p-1">
-                            <Label for="telefono">Tecnico:</Label>
-                            <Select v-model="personalSeleccionado" placeholder="Seleccione un empleado" > <option v-for="personal in props.personals" :key="personal.id" :value="String(personal.id)" > {{ personal.nombre }} {{ personal.apellido }} </option><option :value="null">Sin asignar</option> </Select>
-                        </div>
-                        <div class="grid gap-2 p-6">
-                            <button type="submit" class="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                Guardar
-                            </button>
+                        <div v-else class="grid grid-cols-1 gap-2 p-4 rounded-lg border border-sidebar-border bg-zinc-50 dark:bg-zinc-950 max-h-48 overflow-y-auto">
+                            <div v-for="servicio in servicios" :key="servicio.id" class="flex items-center space-x-3">
+                                <input 
+                                    type="checkbox" 
+                                    :id="'servicio_' + servicio.id" 
+                                    :value="servicio.id.toString()" 
+                                    v-model="form.servicios"
+                                    class="rounded border-input text-blue-600 focus:ring-blue-500 h-4 w-4"
+                                />
+                                <label :for="'servicio_' + servicio.id" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer select-none flex justify-between w-full">
+                                    <span>{{ servicio.nombre }}</span>
+                                    <span class="text-gray-400 text-xs">${{ servicio.precio }} | {{ servicio.duracion_minutos }} min</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
-                    
-                    
+
+                    <!-- Campo manual por si acaso -->
+                    <div class="grid gap-2">
+                        <Label for="servicio_manual">O Escribir Servicio Manualmente (Opcional):</Label>
+                        <Input type="text" v-model="form.servicio_manual" placeholder="Ej. Mantenimiento express" id="servicio_manual" />
+                    </div>
+
+                    <!-- Técnico Asignado -->
+                    <div class="grid gap-2">
+                        <Label for="tecnico">Técnico Asignado:</Label>
+                        <select id="tecnico" v-model="form.tecnico" class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors text-white bg-[#111] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                            <option value="" class="bg-black">-- Seleccione un empleado --</option>
+                            <option v-for="personal in personals" :key="personal.id" :value="personal.id" class="bg-black">
+                                {{ personal.nombre }} {{ personal.apellido }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Botón Guardar -->
+                    <div>
+                        <button type="submit" :disabled="form.processing" class="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                            Guardar Cambios
+                        </button>
+                    </div>
                 </form>
-                
+
             </div>
         </div>
     </AppLayout>
