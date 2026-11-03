@@ -5,6 +5,7 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\PersonalController;
+use App\Http\Controllers\VehiculoController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\AsignacionCitaController;
 
@@ -18,6 +19,8 @@ use App\Http\Controllers\PuestoTrabajoController;
 
 Route::Resource('Personal', PersonalController::class)->middleware('auth');
 Route::resource('propietarios', PropietarioController::class)
+    ->middleware(['auth', 'role:Administrador']);
+Route::resource('vehiculos', VehiculoController::class)
     ->except('show')
     ->middleware(['auth', 'role:Administrador']);
 Route::Resource('PuestoTrabajo', PuestoTrabajoController::class)->middleware('auth');
