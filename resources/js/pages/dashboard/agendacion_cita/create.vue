@@ -36,6 +36,7 @@ interface PuestoTrabajo {
 
 const citas = ref([]);
 const puestosDisponibles = ref([]);
+const horarios_disponibles = ref([]);
 const fechaConsultada = ref('');
 const cargando = ref(false);
 const error = ref('');
@@ -65,6 +66,8 @@ async function consultarDisponibles() {
         citas.value = response.data.citas;
         puestosDisponibles.value = response.data.puestosDisponibles;
         fechaConsultada.value = response.data.fecha;
+        horarios_disponibles.value = response.data.horarios_disponibles;
+        
     } catch (e) {
         if (solicitud !== solicitudActual) return;
         error.value = 'No fue posible consultar los puestos disponibles.';
@@ -145,6 +148,11 @@ watch(tiempoAcumulado, (nuevoTiempo) => {
     form.tiempo = nuevoTiempo;
 });
 
+const seleccionarHorario = (puestoId: number, hora: string) => {
+    form.puesto_trabajo = puestoId;
+    form.hora = hora;
+};
+
 </script>
 
 <template>
@@ -178,40 +186,7 @@ watch(tiempoAcumulado, (nuevoTiempo) => {
                         <div class="grid gap-2 p-1">
                             <Label for="nombre">Fecha:</Label>
                             <Input type="date" :min="fechaActual" v-model="form.fecha" @change="consultarDisponibles" required />
-                            <Label for="hora">Hora:</Label>
-                            <div class="grid grid-cols-3 gap-2">
-                                <!-- Hora -->
-                                <select
-                                    v-model="horaSeleccionada"
-                                    class="w-full rounded-md border border-gray-300 p-2.5"
-                                >
-                                    <option
-                                        v-for="hora in 12"
-                                        :key="hora"
-                                        :value="String(hora).padStart(2, '0')"
-                                    >
-                                        {{ String(hora).padStart(2, '0') }}
-                                    </option>
-                                </select>
-
-                                <!-- Minutos -->
-                                <select
-                                    v-model="minutoSeleccionado"
-                                    class="w-full rounded-md border border-gray-300 p-2.5"
-                                >
-                                    <option value="00">00</option>
-                                    <option value="30">30</option>
-                                </select>
-
-                                <!-- AM / PM -->
-                                <select
-                                    v-model="periodoSeleccionado"
-                                    class="w-full rounded-md border border-gray-300 p-2.5"
-                                >
-                                    <option value="AM">AM</option>
-                                    <option value="PM">PM</option>
-                                </select>
-                            </div>
+                            
                         </div>
                         
                         <div class="grid gap-2 p-1">
@@ -295,8 +270,13 @@ watch(tiempoAcumulado, (nuevoTiempo) => {
                                     :citas="citas"
                                     :fecha="fechaConsultada"
                                     :puestos-disponibles="puestosDisponibles"
-                                    @seleccionar="form.puesto_trabajo = $event"
-                                />
+                                    :horarios_disponibles="horarios_disponibles"
+                                    @seleccionar="seleccionarHorario"
+                                    
+                                /><!--
+                                    :fecha="fecha"
+                                    :citas="citas"
+                                    @seleccionar="seleccionarHorario"-->
                             </div>
                         </div>
                         <div class=" gap-2 p-6">
