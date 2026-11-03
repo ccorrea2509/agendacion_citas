@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import {DataTable} from "@/components/ui/datatable";
+import { Head, Link } from '@inertiajs/vue3';
+import { DataTable } from "@/components/ui/datatable";
 import { router } from '@inertiajs/vue3';
-import {ConfirmModal} from "@/components/ui/confirmmodal";
+import { ConfirmModal } from "@/components/ui/confirmmodal";
 import { ref } from 'vue';
 import { computed } from 'vue';
 
+function ver(puesto_trabajo: PuestosTrabajo) {
+    router.get(`/PuestoTrabajo/${puesto_trabajo.id}`);
+}
 
 function editar(puesto_trabajo: PuestosTrabajo) {
     router.get(`/PuestoTrabajo/${puesto_trabajo.id}/edit`);
@@ -20,7 +23,6 @@ function eliminar(puesto_trabajo: PuestosTrabajo) {
     puesto_trabajoToDelete.value = puesto_trabajo;
     showDeleteModal.value = true;
 }
-
 
 function confirmarEliminacion() {
     if (!puesto_trabajoToDelete.value) {
@@ -47,6 +49,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+const props = defineProps<{
+    puestos_trabajo: PuestosTrabajo[];
+}>();
+
 const puestosTrabajoTabla = computed(() =>
     props.puestos_trabajo.map((puesto) => ({
         ...puesto,
@@ -55,10 +61,6 @@ const puestosTrabajoTabla = computed(() =>
             : 'Sin asignar',
     }))
 );
-
-const props = defineProps<{
-    puestos_trabajo: PuestosTrabajo[];
-}>();
 
 const columns = [
     { key: 'numero_puesto', label: 'Número' },
@@ -78,7 +80,6 @@ interface PuestosTrabajo {
     } | null;
     crated_at: string;
 }
-
 </script>
 
 <template>
@@ -98,6 +99,15 @@ interface PuestosTrabajo {
                     <template #actions="{ item }">
                         <div class="flex gap-2">
 
+                            <!-- Botón Ver para comprobar el show -->
+                            <button
+                                type="button"
+                                @click="ver(item)"
+                                class="rounded-lg bg-emerald-600 px-3 py-2 text-sm text-white hover:bg-emerald-700 transition"
+                            >
+                                Ver
+                            </button>
+
                             <button
                                 type="button"
                                 @click="editar(item)"
@@ -109,9 +119,10 @@ interface PuestosTrabajo {
                             <button 
                                 type="button"
                                 @click="eliminar(item)" 
-                                class="rounded-lg bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700" >
+                                class="rounded-lg bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700"
+                            >
                                 Eliminar
-                             </button>
+                            </button>
 
                         </div>
                     </template>
@@ -121,9 +132,9 @@ interface PuestosTrabajo {
                     title="Eliminar Puesto de Trabajo" 
                     :message=" puesto_trabajoToDelete ? `¿Estás seguro de que deseas eliminar el puesto de trabajo ${puesto_trabajoToDelete.numero_puesto}?` : '' " 
                     @close="cancelarEliminacion" 
-                    @confirm="confirmarEliminacion" />
+                    @confirm="confirmarEliminacion" 
+                />
             </div>
         </div>
     </AppLayout>
 </template>
-

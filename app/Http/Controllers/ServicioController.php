@@ -11,14 +11,14 @@ class ServicioController extends Controller
     public function index()
     {
         $servicios = DB::table('servicios')->get();
-        return Inertia::render('dashboard/Servicios/Index', [
+        return Inertia::render('dashboard/servicios/index', [
             'servicios' => $servicios
         ]);
     }
 
     public function create()
     {
-        return Inertia::render('dashboard/Servicios/Create');
+        return Inertia::render('dashboard/servicios/create');
     }
 
     public function store(Request $request)
@@ -45,7 +45,7 @@ class ServicioController extends Controller
     public function edit($id)
     {
         $servicio = DB::table('servicios')->where('id', $id)->first();
-        return Inertia::render('dashboard/Servicios/Edit', [
+        return Inertia::render('dashboard/servicios/edit', [
             'servicio' => $servicio
         ]);
     }
